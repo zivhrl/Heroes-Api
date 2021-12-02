@@ -37,9 +37,11 @@ namespace Heroes_Api.Controllers
             {
                 pagedHeroes = _heroesRepo.getHeroes(opts, currentUserID);
             }
-            pagedHeroes = _heroesRepo.getHeroes(opts, "");
+            else
+                pagedHeroes = _heroesRepo.getHeroes(opts, "");
             foreach(Hero hero in pagedHeroes.Data)
             {
+                hero.setTrainingCounter();
                 HeroDto dto = _mapper.Map<HeroDto>(hero);
                 dto.CanTrain = hero.User.Id == currentUserID;
                 heroesDtos.Add(dto);
@@ -54,7 +56,7 @@ namespace Heroes_Api.Controllers
         }
 
         [HttpPatch("{id}")]
-        public ActionResult Action(Guid id)
+        public ActionResult TrainHero(Guid id)
         {
             ClaimsPrincipal currentUser = this.User;
             string currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;

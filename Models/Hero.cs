@@ -21,7 +21,10 @@ namespace Heroes_Api.Models
         public void setTrainingCounter()
         {
             if (this.LastTrainingDate.GetValueOrDefault().Date < DateTime.Now.Date)
+            {
+                this.LastTrainingDate = DateTime.Now;
                 this.TrainingCounter = 0;
+            }
         }
     }
 }
