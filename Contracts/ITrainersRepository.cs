@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Heroes_Api.Contracts
 {
-    interface ITrainersRepository
+    public interface ITrainersRepository
     {
         Task<SecurityToken> signin(SigninCredentials credentials);
         Task<SecurityToken> signup(SignupCredentials credentials);

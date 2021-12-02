@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Heroes_Api.Contracts;
 using Heroes_Api.Models;
+using Heroes_Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -64,6 +66,10 @@ namespace Heroes_Api
                 };
             });
 
+            services.AddScoped<ITrainersRepository, TrainersSqlRepository>();
+            services.AddScoped<IHeroesRepository, HeroesSqlRepository>();
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddCors(options => {
                 options.AddDefaultPolicy(builder =>
                 {
@@ -74,7 +80,7 @@ namespace Heroes_Api
 
 
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, HeroesContext _context)
         {
             if (env.IsDevelopment())
             {
@@ -84,8 +90,8 @@ namespace Heroes_Api
             app.UseRouting();
             app.UseCors();
 
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -95,6 +101,7 @@ namespace Heroes_Api
                 });
                 endpoints.MapControllers().RequireAuthorization();
             });
+            SeedHeroes.Seed(_context);
         }
     }
 }
