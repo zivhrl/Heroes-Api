@@ -17,8 +17,10 @@ namespace Heroes_Api.Controllers
     public class TrainersController : Controller
     {
         private ITrainersRepository _trainersRepo;
-        public TrainersController(ITrainersRepository repo)
+        private ILoggerService _logger;
+        public TrainersController(ITrainersRepository repo,ILoggerService logger)
         {
+            _logger = logger;
             _trainersRepo = repo;
         }
 
@@ -27,6 +29,7 @@ namespace Heroes_Api.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogError("ModelState Invalid");
                 return BadRequest();
             }
             SecurityToken token = _trainersRepo.signin(credentials).Result;
@@ -39,6 +42,7 @@ namespace Heroes_Api.Controllers
                     token = handler.WriteToken(token)
                 });
             }
+            _logger.LogError("Unauthorized");
             return Unauthorized();
         }
 
@@ -47,6 +51,7 @@ namespace Heroes_Api.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogError("ModelState Invalid");
                 return BadRequest();
             }
             SecurityToken token = _trainersRepo.signup(credentials).Result;
@@ -59,6 +64,7 @@ namespace Heroes_Api.Controllers
                     token = handler.WriteToken(token)
                 });
             }
+            _logger.LogError("Unauthorized");
             return BadRequest();
         }
     }

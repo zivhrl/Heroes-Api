@@ -17,10 +17,12 @@ namespace Heroes_Api.Controllers
     {
         private IHeroesRepository _heroesRepo;
         private IMapper _mapper;
-        public HeroesController(IHeroesRepository repo,IMapper mapper)
+        private ILoggerService _logger;
+        public HeroesController(IHeroesRepository repo,IMapper mapper,ILoggerService logger)
         {
             _heroesRepo = repo;
             _mapper = mapper;
+            _logger = logger;
         }
 
 
@@ -28,7 +30,10 @@ namespace Heroes_Api.Controllers
         public IActionResult getHeroes([FromQuery] GetOptions opts)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogError("ModelState Invalid");
                 return BadRequest();
+            }
             List<HeroDto> heroesDtos=new List<HeroDto>();
             PagedResponse<Hero> pagedHeroes;
             ClaimsPrincipal currentUser = this.User;
@@ -61,10 +66,16 @@ namespace Heroes_Api.Controllers
             ClaimsPrincipal currentUser = this.User;
             string currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (!_heroesRepo.checkOwnership(id, currentUserID))
+            {
+                _logger.LogError("Hero: " + id + " dosent belong to user: " + currentUserID);
                 return BadRequest();
+            }
             Hero hero = _heroesRepo.TrainHero(id);
             if (hero == null)
+            {
+                _logger.LogError("Cannot train hero");
                 return BadRequest();
+            }
             HeroDto heroDto = _mapper.Map<HeroDto>(hero);
             heroDto.CanTrain = true;
             return Ok(heroDto);

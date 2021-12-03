@@ -68,6 +68,7 @@ namespace Heroes_Api
 
             services.AddScoped<ITrainersRepository, TrainersSqlRepository>();
             services.AddScoped<IHeroesRepository, HeroesSqlRepository>();
+            services.AddScoped<ILoggerService, LoggerService>();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddCors(options => {
