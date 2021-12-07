@@ -35,6 +35,16 @@ namespace Heroes_Api
 
             services.AddControllers();
 
+            services.Configure<IdentityOptions>(opts =>
+            {
+                opts.Password.RequiredLength = 8;
+                opts.Password.RequireNonAlphanumeric = true;
+                opts.Password.RequireDigit = true;
+                opts.Password.RequireLowercase = true;
+                opts.Password.RequireUppercase = true;
+                opts.User.RequireUniqueEmail = true;
+            });
+
             services.AddAuthentication(opts =>
             {
                 opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
