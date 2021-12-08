@@ -64,8 +64,15 @@ namespace Heroes_Api.Controllers
                     token = handler.WriteToken(token)
                 });
             }
-            _logger.LogError("Unauthorized");
-            return BadRequest();
+            _logger.LogError("Internal Error");
+            return StatusCode(500,"Internal Error");
+        }
+
+        [HttpGet]
+        public ActionResult exaption()
+        {
+            _logger.LogError("test error");
+            throw new Exception("test Exception");
         }
     }
 }

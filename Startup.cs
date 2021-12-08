@@ -1,3 +1,5 @@
+using NLog;
+using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Heroes_Api.Middleware;
 
 namespace Heroes_Api
 {
@@ -24,6 +27,7 @@ namespace Heroes_Api
         public IConfiguration Configuration;
         public Startup(IConfiguration config)
         {
+            LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = config;
         }
 
@@ -78,7 +82,7 @@ namespace Heroes_Api
 
             services.AddScoped<ITrainersRepository, TrainersSqlRepository>();
             services.AddScoped<IHeroesRepository, HeroesSqlRepository>();
-            services.AddScoped<ILoggerService, LoggerService>();
+            services.AddSingleton<ILoggerService, LoggerService>();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddCors(options => {
@@ -97,6 +101,8 @@ namespace Heroes_Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.UseRouting();
             app.UseCors();
