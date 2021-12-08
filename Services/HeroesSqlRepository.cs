@@ -46,14 +46,10 @@ namespace Heroes_Api.Services
         {
             Hero hero = _context.Heroes.Find(heroId);
             if (hero == null)
-                return null;
-            if (hero.LastTrainingDate.GetValueOrDefault().Date < DateTime.Now.Date)
-            {
-                hero.LastTrainingDate = DateTime.Now.Date;
-                hero.TrainingCounter = 0;
-            }
+                throw new Exception("400");
+            hero.setTrainingCounter();
             if (hero.TrainingCounter == 5)
-                return null;
+                throw new Exception("405");
             hero.TrainingCounter++;
             Random rnd = new Random();
             double parcent = rnd.Next(0, 1000);
@@ -61,7 +57,7 @@ namespace Heroes_Api.Services
             hero.CurrentPower = hero.CurrentPower * num;
             if (_context.SaveChanges() > 0)
                 return hero;
-            return null;
+            throw new Exception("500");
         }
     }
 }

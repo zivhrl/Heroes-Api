@@ -36,7 +36,7 @@ namespace Heroes_Api.Services
                 SecurityToken token = generateSecurityToken(user);
                 return token;
             }
-            return null;
+            throw new Exception("401");
         }
 
         public async Task<SecurityToken> signup(SignupCredentials credentials)
@@ -48,7 +48,7 @@ namespace Heroes_Api.Services
                 SecurityToken token = generateSecurityToken(user);
                 return token;
             }
-            return null;
+            throw new Exception("409");
         }
 
         private SecurityToken generateSecurityToken(ApplicationUser user)
@@ -60,7 +60,7 @@ namespace Heroes_Api.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim("userId", user.Id),
+                    new Claim(ClaimTypes.Sid, user.Id),
                 }),
                 Expires = DateTime.UtcNow.AddHours(24),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256Signature),

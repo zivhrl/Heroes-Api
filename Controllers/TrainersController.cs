@@ -29,8 +29,7 @@ namespace Heroes_Api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogError("ModelState Invalid");
-                return BadRequest();
+                throw new Exception("400");
             }
             SecurityToken token = _trainersRepo.signin(credentials).Result;
             if (token != null)
@@ -42,8 +41,7 @@ namespace Heroes_Api.Controllers
                     token = handler.WriteToken(token)
                 });
             }
-            _logger.LogError("Unauthorized");
-            return Unauthorized();
+            throw new Exception("500");
         }
 
         [HttpPost("signup")]
@@ -51,8 +49,7 @@ namespace Heroes_Api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogError("ModelState Invalid");
-                return BadRequest();
+                throw new Exception("400");
             }
             SecurityToken token = _trainersRepo.signup(credentials).Result;
             if (token != null)
@@ -64,8 +61,7 @@ namespace Heroes_Api.Controllers
                     token = handler.WriteToken(token)
                 });
             }
-            _logger.LogError("Internal Error");
-            return StatusCode(500,"Internal Error");
+            throw new Exception("500");
         }
 
         [HttpGet]

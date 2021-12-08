@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Heroes_Api.Middleware;
+using System.Security.Claims;
 
 namespace Heroes_Api
 {
@@ -73,7 +74,7 @@ namespace Heroes_Api
                     {
                         var usrmgr = ctx.HttpContext.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
                         var signinmgr = ctx.HttpContext.RequestServices.GetRequiredService<SignInManager<ApplicationUser>>();
-                        string userId = ctx.Principal.FindFirst("userId")?.Value;
+                        string userId = ctx.Principal.FindFirst(ClaimTypes.Sid)?.Value;
                         ApplicationUser idUser = await usrmgr.FindByIdAsync(userId);
                         ctx.Principal = await signinmgr.CreateUserPrincipalAsync(idUser);
                     }

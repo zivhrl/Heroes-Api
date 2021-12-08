@@ -29,18 +29,36 @@ namespace Heroes_Api.Middleware
             }
             catch (Exception exception)
             {
-                _logger.LogError($"Internal error: {exception}");
+                _logger.LogError($"Error Code: {exception}");
                 await HandleExceptionAsync(httpContext, exception);
             }
         }
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            int statusCode;
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            switch (exception.Message)
+            {
+                case "400":
+                    statusCode = 400;
+                    break;
+                case "401":
+                    statusCode = 401;
+                    break;
+                case "405":
+                    statusCode = 405;
+                    break;
+                case "409":
+                    statusCode = 409;
+                    break;
+                default:
+                    statusCode = 500;
+                    break;
+            }
+            context.Response.StatusCode = statusCode;
             await context.Response.WriteAsync(new ErrorDetails()
             {
                 StatusCode = context.Response.StatusCode,
-                Message = "Internal Server Error"
             }.ToString());
         }
     }
