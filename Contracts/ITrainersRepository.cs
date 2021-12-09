@@ -9,7 +9,7 @@ namespace Heroes_Api.Contracts
 {
     public interface ITrainersRepository
     {
-        Task<SecurityToken> signin(SigninCredentials credentials);
-        Task<SecurityToken> signup(SignupCredentials credentials);
+        Task<TokenResponse> signin(Credentials credentials);
+        Task<TokenResponse> signup(Credentials credentials);
     }
 }

@@ -37,22 +37,22 @@ namespace Heroes_Api.Middleware
         {
             int statusCode;
             context.Response.ContentType = "application/json";
-            switch (exception.Message)
+            switch (exception.InnerException.Message)
             {
                 case "400":
-                    statusCode = 400;
+                    statusCode = (int)HttpStatusCode.BadRequest;
                     break;
                 case "401":
-                    statusCode = 401;
+                    statusCode = (int)HttpStatusCode.Unauthorized;
                     break;
                 case "405":
-                    statusCode = 405;
+                    statusCode = (int)HttpStatusCode.MethodNotAllowed;
                     break;
                 case "409":
-                    statusCode = 409;
+                    statusCode = (int)HttpStatusCode.Conflict;
                     break;
                 default:
-                    statusCode = 500;
+                    statusCode = (int)HttpStatusCode.InternalServerError;
                     break;
             }
             context.Response.StatusCode = statusCode;

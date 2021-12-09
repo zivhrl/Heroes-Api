@@ -27,31 +27,31 @@ namespace Heroes_Api.Services
         }
 
 
-        public async Task<SecurityToken> signin(SigninCredentials credentials)
+        public async Task<TokenResponse> signin(Credentials credentials)
         {
             ApplicationUser user = await userManager.FindByNameAsync(credentials.UserName);
             SignInResult signInResult = await signInManager.PasswordSignInAsync(user, credentials.Password, false, false);
             if (signInResult.Succeeded)
             {
-                SecurityToken token = generateSecurityToken(user);
-                return token;
+                TokenResponse response = generateSecurityTokenResponse(user);
+                return response;
             }
             throw new Exception("401");
         }
 
-        public async Task<SecurityToken> signup(SignupCredentials credentials)
+        public async Task<TokenResponse> signup(Credentials credentials)
         {
             ApplicationUser user = new ApplicationUser { UserName = credentials.UserName, Email = credentials.Email };
             IdentityResult result = await userManager.CreateAsync(user, credentials.Password);
             if (result.Succeeded)
             {
-                SecurityToken token = generateSecurityToken(user);
-                return token;
+                TokenResponse response = generateSecurityTokenResponse(user);
+                return response;
             }
             throw new Exception("409");
         }
 
-        private SecurityToken generateSecurityToken(ApplicationUser user)
+        private TokenResponse generateSecurityTokenResponse(ApplicationUser user)
         {
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
             byte[] secret = Encoding.ASCII.GetBytes(configuration["jwtSecret"]);
@@ -68,7 +68,8 @@ namespace Heroes_Api.Services
                 Audience = configuration["jwtAudiance"]
             };
             SecurityToken token = handler.CreateToken(descriptor);
-            return token;
+            TokenResponse response = new TokenResponse { Token = handler.WriteToken(token) };
+            return response;
         }
     }
 }

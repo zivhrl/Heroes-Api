@@ -16,13 +16,11 @@ namespace Heroes_Api.Controllers
     public class HeroesController : Controller
     {
         private IHeroesRepository _heroesRepo;
-        private IMapper _mapper;
-        private ILoggerService _logger;
-        public HeroesController(IHeroesRepository repo,IMapper mapper,ILoggerService logger)
+       
+
+        public HeroesController(IHeroesRepository repo)
         {
             _heroesRepo = repo;
-            _mapper = mapper;
-            _logger = logger;
         }
 
 
@@ -31,53 +29,32 @@ namespace Heroes_Api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogError("ModelState Invalid");
-                return BadRequest();
+                throw new Exception("400");
             }
-            List<HeroDto> heroesDtos=new List<HeroDto>();
-            PagedResponse<Hero> pagedHeroes;
             ClaimsPrincipal currentUser = this.User;
-            string currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (opts.filterForTrainer)
+            string currentUserId = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            PagedResponse<HeroDto> pagedHeroes=_heroesRepo.getHeroes(opts,currentUserId);
+            if (pagedHeroes == null)
             {
-                pagedHeroes = _heroesRepo.getHeroes(opts, currentUserID);
+                throw new Exception("500");
             }
-            else
-                pagedHeroes = _heroesRepo.getHeroes(opts, "");
-            foreach(Hero hero in pagedHeroes.Data)
-            {
-                hero.setTrainingCounter();
-                HeroDto dto = _mapper.Map<HeroDto>(hero);
-                dto.CanTrain = hero.User.Id == currentUserID;
-                heroesDtos.Add(dto);
-
-            }
-            PagedResponse<HeroDto> response = new PagedResponse<HeroDto>
-            {
-                Data = heroesDtos,
-                MaxPages=pagedHeroes.MaxPages
-            };
-            return Ok(response);
+            return Ok(pagedHeroes);
         }
 
         [HttpPatch("{id}")]
         public ActionResult TrainHero(Guid id)
         {
             ClaimsPrincipal currentUser = this.User;
-            string currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (!_heroesRepo.checkOwnership(id, currentUserID))
+            string currentUserId = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (!_heroesRepo.checkOwnership(id, currentUserId))
             {
-                _logger.LogError("Hero: " + id + " dosent belong to user: " + currentUserID);
-                return BadRequest();
+                throw new Exception("400");
             }
-            Hero hero = _heroesRepo.TrainHero(id);
-            if (hero == null)
+            HeroDto heroDto = _heroesRepo.TrainHero(id);
+            if (heroDto == null)
             {
-                _logger.LogError("Cannot train hero");
-                return BadRequest();
+                throw new Exception("500");
             }
-            HeroDto heroDto = _mapper.Map<HeroDto>(hero);
-            heroDto.CanTrain = true;
             return Ok(heroDto);
         }
     }

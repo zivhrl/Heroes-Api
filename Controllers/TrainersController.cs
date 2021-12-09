@@ -25,50 +25,33 @@ namespace Heroes_Api.Controllers
         }
 
         [HttpPost("signin")]
-        public IActionResult signin([FromBody] SigninCredentials credentials)
+        public IActionResult signin([FromBody] Credentials credentials)
         {
             if (!ModelState.IsValid)
             {
                 throw new Exception("400");
             }
-            SecurityToken token = _trainersRepo.signin(credentials).Result;
-            if (token != null)
+            TokenResponse response = _trainersRepo.signin(credentials).Result;
+            if (response != null)
             {
-                JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-                return Ok(new
-                {
-                    success = true,
-                    token = handler.WriteToken(token)
-                });
+                return Ok(response);
             }
             throw new Exception("500");
         }
 
         [HttpPost("signup")]
-        public IActionResult signup([FromBody] SignupCredentials credentials)
+        public IActionResult signup([FromBody] Credentials credentials)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid && credentials.Email!=null)
             {
                 throw new Exception("400");
             }
-            SecurityToken token = _trainersRepo.signup(credentials).Result;
-            if (token != null)
+            TokenResponse response = _trainersRepo.signup(credentials).Result;
+            if (response != null)
             {
-                JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-                return Ok(new
-                {
-                    success = true,
-                    token = handler.WriteToken(token)
-                });
+                return Ok(response);
             }
             throw new Exception("500");
-        }
-
-        [HttpGet]
-        public ActionResult exaption()
-        {
-            _logger.LogError("test error");
-            throw new Exception("test Exception");
         }
     }
 }

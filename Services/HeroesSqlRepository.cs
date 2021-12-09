@@ -1,4 +1,6 @@
-﻿using Heroes_Api.Contracts;
+﻿using AutoMapper;
+using Heroes_Api.Contracts;
+using Heroes_Api.Dtos;
 using Heroes_Api.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,9 +13,11 @@ namespace Heroes_Api.Services
     public class HeroesSqlRepository : IHeroesRepository
     {
         private HeroesContext _context;
-        public HeroesSqlRepository(HeroesContext ctx)
+        private IMapper _mapper;
+        public HeroesSqlRepository(HeroesContext ctx, IMapper mapper)
         {
             _context = ctx;
+            _mapper = mapper;
         }
 
         public bool checkOwnership(Guid heroId, string userId)
@@ -22,27 +26,36 @@ namespace Heroes_Api.Services
             return hero.User.Id == userId;
         }
 
-        public PagedResponse<Hero> getHeroes(GetOptions options, string UserId)
+        public PagedResponse<HeroDto> getHeroes(GetOptions options, string userId)
         {
             int skip = (options.pageNumber - 1) * options.pageSize;
            
             IQueryable<Hero> heroes = _context.Heroes.Include(hero=>hero.User).OrderBy(hero=>hero.CurrentPower);
-            if (UserId != "" && options.filterForTrainer==true)
+            if (options.filterForTrainer==true)
             {
-                heroes = heroes.Where(h => h.User.Id == UserId);
+                heroes = heroes.Where(h => h.User.Id == userId);
             }
             double maxPages = (double)heroes.Count() / options.pageSize;
             heroes = heroes.Skip(skip).Take(options.pageSize);
-            PagedResponse<Hero> response = new PagedResponse<Hero>
+            List<HeroDto> heroesDtos = new List<HeroDto>();
+            foreach (Hero hero in heroes)
             {
-                Data = heroes.ToList(),
+                hero.setTrainingCounter();
+                HeroDto dto = _mapper.Map<HeroDto>(hero);
+                dto.CanTrain = hero.User.Id == userId;
+                heroesDtos.Add(dto);
+
+            }
+            PagedResponse<HeroDto> response = new PagedResponse<HeroDto>
+            {
+                Data = heroesDtos,
                 MaxPages = (int)Math.Ceiling(maxPages)
             };
             return response;
 
         }
 
-        public Hero TrainHero(Guid heroId)
+        public HeroDto TrainHero(Guid heroId)
         {
             Hero hero = _context.Heroes.Find(heroId);
             if (hero == null)
@@ -56,7 +69,11 @@ namespace Heroes_Api.Services
             double num = 1 + (parcent / 10000);
             hero.CurrentPower = hero.CurrentPower * num;
             if (_context.SaveChanges() > 0)
-                return hero;
+            {
+                HeroDto heroDto = _mapper.Map<HeroDto>(hero);
+                heroDto.CanTrain = true;
+                return heroDto;
+            }
             throw new Exception("500");
         }
     }
