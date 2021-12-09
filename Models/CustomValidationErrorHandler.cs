@@ -12,7 +12,7 @@ namespace Heroes_Api.Models
         public static void CustomValidationResponse(IServiceCollection services)
         {
             services.Configure<ApiBehaviorOptions>(
-                options => options.InvalidModelStateResponseFactory = actionContext =>
+                options => options.InvalidModelStateResponseFactory = actionontext =>
                 {
                     return new BadRequestObjectResult(new ErrorDetails
                     {
