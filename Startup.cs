@@ -92,6 +92,7 @@ namespace Heroes_Api
                     builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                 });
             });
+
             CustomValidationErrorHandler.CustomValidationResponse(services);
 
         }

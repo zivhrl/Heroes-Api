@@ -11,10 +11,8 @@ using System.Threading.Tasks;
 
 namespace Heroes_Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
     [AllowAnonymous]
-    public class TrainersController : Controller
+    public class TrainersController : AppApiController
     {
         private ITrainersRepository _trainersRepo;
         private ILoggerService _logger;

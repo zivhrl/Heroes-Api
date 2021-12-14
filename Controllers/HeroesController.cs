@@ -11,9 +11,7 @@ using System.Threading.Tasks;
 
 namespace Heroes_Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class HeroesController : Controller
+    public class HeroesController : AppApiController
     {
         private IHeroesRepository _heroesRepo;
        

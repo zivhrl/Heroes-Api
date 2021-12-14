@@ -11,7 +11,7 @@ namespace Heroes_Api.Dtos
         public Guid Id { get; set; }
         public string Name { get; set; }
         public Ability Ability { get; set; }
-        public DateTime StartedTraining { get; set; }
+        public DateTime StartedTrainingDate { get; set; }
         public string SuitColors { get; set; }
         public double StartingPower { get; set; }
         public double CurrentPower { get; set; }

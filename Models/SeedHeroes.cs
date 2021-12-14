@@ -27,7 +27,7 @@ namespace Heroes_Api.Models
                 hero1.Id = Guid.NewGuid();
                 hero1.Name = "Superman";
                 hero1.SuitColors = "Blue, Red";
-                hero1.StartedTraining = new DateTime(2021, 4, 5);
+                hero1.StartedTrainingDate = new DateTime(2021, 4, 5);
                 hero1.Ability = Ability.ATTACKER;
                 hero1.StartingPower = 450.5;
                 hero1.CurrentPower = 657.8;
@@ -39,7 +39,7 @@ namespace Heroes_Api.Models
                 hero2.Id = Guid.NewGuid();
                 hero2.Name = "Defender";
                 hero2.SuitColors = "Silver, black";
-                hero2.StartedTraining = new DateTime(2021, 5, 5);
+                hero2.StartedTrainingDate = new DateTime(2021, 5, 5);
                 hero2.Ability = Ability.DEFENDER;
                 hero2.StartingPower = 200.0;
                 hero2.CurrentPower = 367.8;
@@ -52,7 +52,7 @@ namespace Heroes_Api.Models
                 hero3.Id = Guid.NewGuid();
                 hero3.Name = "Rom";
                 hero3.SuitColors = "Blue";
-                hero3.StartedTraining = new DateTime(2021, 4, 5);
+                hero3.StartedTrainingDate = new DateTime(2021, 4, 5);
                 hero3.Ability = Ability.ATTACKER;
                 hero3.StartingPower = 250.7;
                 hero3.CurrentPower = 560.9;
@@ -64,7 +64,7 @@ namespace Heroes_Api.Models
                 hero4.Id = Guid.NewGuid();
                 hero4.Name = "antiman";
                 hero4.SuitColors = "Blue, Red";
-                hero4.StartedTraining = new DateTime(2021, 4, 5);
+                hero4.StartedTrainingDate = new DateTime(2021, 4, 5);
                 hero4.Ability = Ability.DEFENDER;
                 hero4.StartingPower = 450.5;
                 hero4.CurrentPower = 657.8;
@@ -76,7 +76,7 @@ namespace Heroes_Api.Models
                 hero5.Id = Guid.NewGuid();
                 hero5.Name = "Attecker";
                 hero5.SuitColors = "Silver, black";
-                hero5.StartedTraining = new DateTime(2021, 5, 5);
+                hero5.StartedTrainingDate = new DateTime(2021, 5, 5);
                 hero5.Ability = Ability.ATTACKER;
                 hero5.StartingPower = 200.0;
                 hero5.CurrentPower = 367.8;
@@ -89,7 +89,7 @@ namespace Heroes_Api.Models
                 hero6.Id = Guid.NewGuid();
                 hero6.Name = "Mor";
                 hero6.SuitColors = "Red";
-                hero6.StartedTraining = new DateTime(2021, 4, 5);
+                hero6.StartedTrainingDate = new DateTime(2021, 4, 5);
                 hero6.Ability = Ability.DEFENDER;
                 hero6.StartingPower = 250.7;
                 hero6.CurrentPower = 560.9;
